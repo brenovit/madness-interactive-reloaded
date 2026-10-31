@@ -41,6 +41,7 @@ If you run into any issues you should first make sure you:
 ## Building on macOS
 macOS isn't officially supported, but the game builds and runs on Apple Silicon with a few extra steps.
 
+- **Quick way:** with [Homebrew](https://brew.sh) installed, run `./run.sh` from the repository root. It installs the .NET SDK and `ffmpeg@5` if they're missing, initialises the submodules, builds and starts the game. `./run.sh --help` lists its options (`--release`, `--build-only`, `-- <game args>`). It also works on Linux, where you install the .NET SDK yourself. The manual steps follow.
 - Install the requirements with [Homebrew](https://brew.sh):
     ```shell
     brew install --cask dotnet-sdk
