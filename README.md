@@ -47,22 +47,16 @@ macOS isn't officially supported, but the game builds and runs on Apple Silicon 
     brew install ffmpeg@5
     ```
     - `ffmpeg@5` is needed for cutscene videos. The game uses FFmpeg 5.1 and only ships the Windows libraries; newer FFmpeg versions (such as the default `ffmpeg` formula) are not compatible.
-    - If Homebrew installs a newer .NET SDK than 9, that's fine: it can still build the game. Either also install the [.NET 9 runtime](https://dotnet.microsoft.com/en-us/download/dotnet/9.0), or prefix the `dotnet` commands below with `DOTNET_ROLL_FORWARD=Major` to run on the newer runtime.
+    - A newer .NET SDK/runtime than 9 is fine: the game is built with `RollForward=Major`, so it runs on whichever newer runtime is installed.
 - Clone the repository and initialise the submodules as described above.
-- Restore packages from the `src` directory. Harmony has to be restored in its `DebugThin` configuration, otherwise its MonoMod dependency is missing:
+- Build from the `src\MadnessInteractiveReloaded` directory (or build `src/MIR.sln`), same as on Windows and Linux:
     ```shell
-    cd src
-    dotnet restore MIR.sln
-    dotnet restore Harmony/Harmony/Harmony.csproj -p:Configuration=DebugThin
+    cd src/MadnessInteractiveReloaded
+    dotnet build
     ```
-- Build the solution. `GeneratePackageOnBuild=false` stops Harmony from packing a NuGet package and deleting the MonoMod DLLs the game needs:
-    ```shell
-    DOTNET_ROLL_FORWARD=Major dotnet build MIR.sln --no-restore -p:GeneratePackageOnBuild=false
-    ```
-    - The `MIR.Test` project fails to build because it uses the Windows-only `xcopy`. This doesn't affect the game.
 - Run the game, pointing it at the FFmpeg 5 libraries:
     ```shell
-    cd MadnessInteractiveReloaded/bin/Debug/net9.0
-    DYLD_LIBRARY_PATH=/opt/homebrew/opt/ffmpeg@5/lib DOTNET_ROLL_FORWARD=Major dotnet MIR.dll
+    cd bin/Debug/net9.0
+    DYLD_LIBRARY_PATH=/opt/homebrew/opt/ffmpeg@5/lib dotnet MIR.dll
     ```
 - You may see `Failed to set process priority` and `OpenAL error ... Invalid Name` messages in the console. These are harmless.

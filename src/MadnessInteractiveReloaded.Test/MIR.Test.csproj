@@ -5,6 +5,7 @@
 		<Nullable>enable</Nullable>
 
 		<IsPackable>false</IsPackable>
+		<RollForward>Major</RollForward>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -26,13 +27,22 @@
 		<ProjectReference Include="..\MadnessInteractiveReloaded\MIR.csproj" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<MirProjectDir>$(MSBuildThisFileDirectory)..\MadnessInteractiveReloaded\</MirProjectDir>
+	</PropertyGroup>
+
+	<!-- MSBuild Copy instead of xcopy, so this builds on Windows, Linux and macOS -->
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="xcopy &quot;$(SolutionDir)MadnessInteractiveReloaded\resources&quot; &quot;$(OutDir)resources&quot; /I /S /E /Q /Y /K" />
-		<Exec Command="xcopy &quot;$(SolutionDir)MadnessInteractiveReloaded\base&quot; &quot;$(OutDir)base&quot; /I /S /E /Q /Y /K" />
+		<ItemGroup>
+			<MirResources Include="$(MirProjectDir)resources\**\*" />
+			<MirBase Include="$(MirProjectDir)base\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(MirResources)" DestinationFiles="@(MirResources->'$(OutDir)resources\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(MirBase)" DestinationFiles="@(MirBase->'$(OutDir)base\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
 	</Target>
-	
+
 	<Target Name="PostBuild" BeforeTargets="PostBuildEvent">
-		<Exec Command=".\MIR --mode pack --input &quot;$(SolutionDir)MadnessInteractiveReloaded\base&quot; --output resources/base.waa" WorkingDirectory="$(OutDir)" />
+		<Exec Command="dotnet MIR.dll --mode pack --input &quot;$(MirProjectDir)base&quot; --output resources/base.waa" WorkingDirectory="$(OutDir)" />
 	</Target>
 
 

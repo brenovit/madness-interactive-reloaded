@@ -15,6 +15,8 @@
 		<DebugType>embedded</DebugType>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<Platforms>AnyCPU;x64</Platforms>
+		<!-- Lets the game (and its post-build pack step) run on a newer .NET runtime when only that is installed. -->
+		<RollForward>Major</RollForward>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

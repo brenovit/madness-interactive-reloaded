@@ -1,0 +1,17 @@
+<Project>
+
+	<!--
+		Harmony only references MonoMod in its own *Thin/*Fat configurations, so building MIR.csproj
+		directly (plain Debug/Release) left Harmony without MonoMod. Give Harmony the reference for
+		any other configuration, and stop it packing a NuGet package (which deletes the MonoMod DLLs).
+	-->
+	<PropertyGroup Condition="'$(MSBuildProjectName)'=='Harmony' And !$(Configuration.EndsWith('Thin')) And !$(Configuration.EndsWith('Fat')) And '$(Configuration)'!='ReleaseRef'">
+		<IsMirHarmonyBuild>true</IsMirHarmonyBuild>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(IsMirHarmonyBuild)'=='true'">
+		<PackageReference Include="MonoMod.Core" Version="$(MonoModCoreVersion)" />
+	</ItemGroup>
+
+</Project>
